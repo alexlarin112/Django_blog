@@ -1,0 +1,28 @@
+{% extends 'blog/base.html' %}
+{% load static %}
+
+{% block content %}
+<ul class="list-articles">
+	{% for p in posts %}
+			<li><div class="article-panel">
+	<p class="first">категория: {{p.cat}}</p>
+	<p class="last">{{p.time_update|date:"H:i d.m.y"}}</p>
+</div>
+<a class="post_link" href="{{ p.get_absolute_url }}">
+{% if p.photo %}
+	<p><img class="img-article-left thumb" src="{{p.photo.url}}"></p>
+{% else %}
+	<p><img class="img-article-left thumb" src="{% static 'blog/images/no_foto.jpg' %}"></p>
+{% endif %}
+
+				<h2>{{p.title}}</h2>
+	{% autoescape on %}
+	{{p.content|linebreaks|truncatewords:20}}
+	{% endautoescape %}
+</a>
+			<div class="clear"></div>
+
+			</li>
+	{% endfor %}
+</ul>
+{% endblock %}

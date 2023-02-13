@@ -1,0 +1,6 @@
+{% load i18n %}
+{% spaceless %}
+<div class="form-group">
+  <p><label class="form-label" for="{{ f.id_for_label }}"><img src="{{ image }}" alt="captcha" class="captcha"></label>{% include "django/forms/widgets/multiwidget.html" %}</p>
+</div>
+{% endspaceless %}

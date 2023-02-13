@@ -1,0 +1,53 @@
+{% extends 'blog/base.html' %}
+{% load static %}
+{% block bootstrap3 %}
+
+{% endblock %}
+
+
+{% block content %}
+
+
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+
+<ul class="like-dislike">
+
+    <li class="like-dislike" data-id="{{ post.id }}" data-type="blog" data-action="like" title="Нравится">
+        <span><img src="{% static 'blog/images/hand-thumbs-up.svg' %}"></span>
+        <span data-count="like">{{ post.votes.likes.count }}</span>
+    </li>
+    <li class="like-dislike" data-id="{{ post.id }}" data-type="blog" data-action="dislike" title="Не нравится">
+        <span><img src="{% static 'blog/images/hand-thumbs-down.svg' %}"></span>
+        <span data-count="dislike">{{ post.votes.dislikes.count }}</span>
+    </li>
+    <li class="content-title">
+        <h3>{{post.title}}</h3>
+    </li>
+
+    {% if post.author == request.user %}
+
+    <li class="like-dislike"><a class="post_link" href="{% url 'post_update' post.slug %}">Изменить</a></li>
+    <li class="like-dislike"><a class="post_link" href="{% url 'post_delete' post.slug %}">Удалить</a> &nbsp;|</li>
+    <br>
+    {% endif %}
+
+</ul>
+
+
+
+
+
+
+{% if post.photo %}
+<p><img class="img-article-left-post" src="{{post.photo.url}}"></p>
+{% endif %}
+
+<div class="post-content">{{post.content|linebreaks}}</div>
+
+
+<script type="text/javascript" src={% static 'blog/js/ajax_starter.js' %}></script>
+<script type="text/javascript" src={% static 'blog/js/like_dislike.js' %}></script>
+
+{% endblock %}
+
+

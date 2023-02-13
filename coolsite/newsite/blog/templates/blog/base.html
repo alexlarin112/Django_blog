@@ -1,0 +1,149 @@
+{% load static %}
+{% block bootstrap3 %}
+{% endblock %}
+<!DOCTYPE html>
+<html>
+<head>
+	<title>{{title}}</title>
+	<link type="text/css" href="{% static 'blog/css/styles.css' %}" rel="stylesheet" />
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<link rel="shortcut icon" href="{% static 'blog/images/main.ico' %}" type="image/x-icon"/>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+<table class="table-page" border=0 cellpadding="0" cellspacing="0">
+<tr><td valign=top>
+{% block mainmenu %}
+
+
+
+		<div class="header">
+			<ul id="mainmenu" class="mainmenu">
+				<li class="logo"><a href="{% url 'home' %}"><div class="logo"></div></a></li>
+				<li class="first">
+				 {% if request.user.is_authenticated %}
+					<li class="first"> {{user.username | upper }}&nbsp;&nbsp;<a href="{% url 'logout' %}"><img class="logout" src="{% static 'blog/images/logout1.svg' %}"</img></a></li>
+				{% else %}
+					<li class="first"><a href="{% url 'register' %}">Регистрация</a> | <a href="{% url 'login' %}">Войти</a></li>
+				{% endif %}
+				</li>
+				{% for m in header_menu %}
+					<li><a href="{% url m.url_name %}">{{m.title}}</a></li>
+				{% endfor %}
+
+				<li class="last">
+					<li class="last">
+						<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+						<form class="search" action="{% url 'search' %}" method="get">
+  							<input class="search" name="q" placeholder="Поиск по сайту..." type="search">
+  							<i class="fa fa-search"></i>
+						</form>
+					</li>
+				</li>
+
+			</ul>
+
+			<div class="clear"></div>
+		</div>
+{% endblock mainmenu %}
+
+
+<table class="table-content" border=0 cellpadding="0" cellspacing="0">
+<tr>
+<!-- Sidebar слева -->
+	<td valign="top" class="left-chapters">
+	<ul id="leftchapters">
+{% if cat_selected == 0 %}
+		<li class="selected">Все категории</li>
+{% else %}
+		<li><a href="{% url 'home' %}">Все категории</a></li>
+{% endif %}
+
+{% for c in cats %}
+		{% if cat_selected == c.pk %}
+			<li class="selected">{{ c.name }}</li>
+		{% else %}
+			<li><a href="{{ c.get_absolute_url }}">{{ c.name }}</a></li>
+		{% endif %}
+{% endfor %}
+
+		<li class="share">
+		</li>
+	</ul>
+</td>
+<!-- Конец Sidebar'а -->
+<td valign="top" class="content">
+	<!-- Хлебные крошки -->
+	{% block breadcrumbs %}
+	{% endblock %}
+
+<!-- Блок контента -->
+	<div class="content-text">
+{% block content %}
+{% endblock %}
+	</div>
+<!-- Конец блока контента -->
+
+<!-- Пагинация -->
+{% if page_obj.has_other_pages %}
+<nav class="list-pages">
+    <ul>
+		{% if page_obj.has_previous %}
+			<li class="page-num">
+				{% if request.GET.q %}
+				<a href="?page={{ page_obj.previous_page_number }}}&q={{ request.GET.q }}">&lt;</a>
+				{% else %}
+				<a href="../?page={{ page_obj.previous_page_number }}">&lt;</a>
+				{% endif %}
+
+			</li>
+		{% endif %}
+
+		{% for p in paginator.page_range %}
+				   {% if page_obj.number == p %}
+		<li class="page-num page-num-selected">{{ p }}</li>
+				   {% elif p >= page_obj.number|add:-2 and p <= page_obj.number|add:2 %}
+		<li class="page-num">
+			{% if request.GET.q %}
+			<a href="?page={{ p }}&q={{ request.GET.q }}">{{ p }}</a>
+			{% else %}
+			<a href="../?page={{ p }}">{{ p }}</a>
+			{% endif %}
+		</li>
+				   {% endif %}
+		{% endfor %}
+
+		{% if page_obj.has_next %}
+			<li class="page-num">
+				{% if request.GET.q %}
+				<a href="?page={{ page_obj.next_page_number }}&q={{ request.GET.q }}">&gt;</a>
+				{% else %}
+				<a href="../?page={{ page_obj.next_page_number }}">&gt;</a>
+				{% endif %}
+			</li>
+		{% endif %}
+
+    </ul>
+
+</nav>
+{% endif %}
+<!-- Конец пагинации -->
+
+
+</td></tr></table>
+</td></tr>
+<!-- Footer -->
+<tr><td valign=top>
+	<div id="footer">
+	<p>
+		{% for m in footer_menu %}
+			&nbsp; <a href="{% url m.url_name %}">{{m.title}}</a> &nbsp;
+		{% endfor %}
+		&copy; {% now "Y" %} Сайт для обучения веб-разработке.
+	</p>
+	</div>
+</td></tr></table>
+<!-- Конец footer'а и страницы -->
+</body>
+</html>
